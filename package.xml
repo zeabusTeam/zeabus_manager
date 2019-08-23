@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package format="2">
+
+    <name>zeabus_manager</name>
+    <version>0.0.0</version>
+    <description>This package purpose to use in top of team manager connection</description>
+
+    <maintainer email="supasan.k@ku.th">K.Supasan</maintainer>
+    <license>MIT</license>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+</package>
