@@ -26,6 +26,8 @@
 
 #include    <zeabus_utility/ServiceBool.h>
 
+#include    <zeabus_utility/SendBool.h>
+
 class ServiceResponseState
 {
     public:
@@ -40,7 +42,7 @@ class ServiceResponseState
 
         void setup_server()
         {
-            this->service_reponse_state = this->ptr_node_handle->advertiseService( "/manage/state",
+            this->service_reponse_state = this->ptr_node_handle->advertiseService( "/manage/switch",
                     &ServiceResponseState::callback_response_state , this );
         }
 
@@ -91,6 +93,12 @@ int main( int argv , char** argc )
     server_response_state.setup_server();
 
     ros::Time time_stamp = ros::Time::now();
+
+    // Part activity for send state 
+    ros::ServiceClient client_activate_control = nh.serviceClient< zeabus_utility::SendBool >(
+            "/control/activate" );
+    zeabus_utility::SendBool srv_bool;
+    srv_bool.request.header.frame_id = "manager";
 
     // Part parameter to setup node
     
@@ -148,6 +156,7 @@ decision_state:
                 lock_state.unlock();
                 goto activity_part;
             }
+            continue;
         case limit_state:
             if( ! current_state )
             {
@@ -156,17 +165,29 @@ decision_state:
                 lock_state.unlock();
                 goto activity_part;
             }
+            continue;
         }
         continue;
 
 activity_part:
         if( current_state )
         {
-            std::cout   << "Swtich have been turn on\n";
+            std::cout   << "Switch have been turn on\n";
+            srv_bool.request.data = current_state;
         }
         else
         {
             std::cout   << "Switch have been turn off\n";
+            srv_bool.request.data = current_state;
+        }
+        srv_bool.request.header.stamp = time_stamp;
+        if( client_activate_control.call( srv_bool ) )
+        {
+            std::cout   << "\tCONTROL : Success\n";
+        }
+        else
+        {
+            std::cout   << "\tCONTROL : Failure\n";
         }
         
     } // main loop
