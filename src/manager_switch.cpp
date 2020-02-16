@@ -97,6 +97,8 @@ int main( int argv , char** argc )
     // Part activity for send state 
     ros::ServiceClient client_activate_control = nh.serviceClient< zeabus_utility::SendBool >(
             "/control/activate" );
+    ros::ServiceClient client_mission_project = nh.serviceClient< zeabus_utility::SendBool >(
+            "/project/activate" );
     zeabus_utility::SendBool srv_bool;
     srv_bool.request.header.frame_id = "manager";
 
@@ -190,6 +192,14 @@ activity_part:
             std::cout   << "\tCONTROL : Failure\n";
         }
         
+        if( client_mission_project.call( srv_bool ) )
+        {
+            std::cout   << "\tISSION : Success\n";
+        }
+        else
+        {
+            std::cout   << "\tMISSION : Failure\n";
+        }
     } // main loop
 
 exit_main:
