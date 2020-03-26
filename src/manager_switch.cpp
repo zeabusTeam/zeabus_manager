@@ -194,7 +194,7 @@ activity_part:
         
         if( client_mission_project.call( srv_bool ) )
         {
-            std::cout   << "\tISSION : Success\n";
+            std::cout   << "\tMISSION : Success\n";
         }
         else
         {
